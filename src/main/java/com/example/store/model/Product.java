@@ -28,10 +28,13 @@ public abstract class Product {
         return LocalDate.now().isAfter(expirationDate);
     }
 
-    public boolean isNearExpiration(int daysUntilDiscount) {
-        return !isExpired() && 
-               LocalDate.now().plusDays(daysUntilDiscount).isAfter(expirationDate);
+    public boolean isNearExpiration(int days) {
+        return !isExpired() &&
+               expirationDate != null &&
+               !expirationDate.isBefore(LocalDate.now()) &&
+               !expirationDate.isAfter(LocalDate.now().plusDays(days));
     }
+    
 
     public void decreaseQuantity(int amount) {
         if (amount > quantity) {

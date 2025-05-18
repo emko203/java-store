@@ -21,9 +21,11 @@ class StoreTest {
         store = new Store("Test Store", 20.0, 30.0, 7, 15.0);
         
         milk = new FoodProduct("F001", "Milk", 2.50, 
-                             LocalDate.now().plusDays(5), 100);
+                               LocalDate.now().plusDays(5), 100);
+
+        // Коригирана дата за сапуна: да изтича след 5 дни
         soap = new NonFoodProduct("NF001", "Soap", 3.00, 
-                                LocalDate.now().plusMonths(6), 200);
+                                  LocalDate.now().plusDays(5), 200);
         
         cashier = new Cashier("C001", "John Doe", 1500.0);
         register = new CashRegister("R001");
@@ -65,20 +67,31 @@ class StoreTest {
 
     @Test
     void testPriceCalculation() {
-        double milkPrice = store.calculateProductPrice(milk);
-        double expectedMilkPrice = 2.50 * 1.20; // delivery price * food markup
-        assertEquals(expectedMilkPrice, milkPrice, 0.001);
+        double markup = 30.0; // 30% надценка
+        int daysUntilDiscount = 7;
+        double discount = 15.0; // 15% отстъпка
 
-        // Debug prints
-        System.out.println("Soap expiration date: " + soap.getExpirationDate());
-        System.out.println("Soap is near expiration: " + soap.isNearExpiration(7));
-        System.out.println("Soap base price: " + soap.getDeliveryPrice());
-        
-        double soapPrice = store.calculateProductPrice(soap);
-        assertTrue(soap.isNearExpiration(7), "Soap should be near expiration for discount to apply");
-        double expectedSoapPrice = 2.55; // реалната изчислена стойност според текущата логика
-        assertEquals(expectedSoapPrice, soapPrice, 0.001);
+        // Продукт НЕ е близо до изтичане
+        Product shampoo = new NonFoodProduct("001", "Shampoo", 5.00, 
+            LocalDate.now().plusDays(30), 20);
+        double expectedPriceWithoutDiscount = 5.00 * (1 + markup / 100.0);
+        double actualPriceWithoutDiscount = shampoo.calculateSellingPrice(markup, daysUntilDiscount, discount);
+
+        assertEquals(expectedPriceWithoutDiscount, actualPriceWithoutDiscount, 0.001,
+            "Price should be without discount when product is not near expiration");
+
+        // Продукт Е близо до изтичане
+        Product soap = new NonFoodProduct("002", "Soap", 3.00, 
+            LocalDate.now().plusDays(3), 10);
+        double expectedPriceWithDiscount = 3.00 * (1 + markup / 100.0) * (1 - discount / 100.0);
+        double actualPriceWithDiscount = soap.calculateSellingPrice(markup, daysUntilDiscount, discount);
+
+        assertEquals(expectedPriceWithDiscount, actualPriceWithDiscount, 0.001,
+            "Price should include discount when product is near expiration");
     }
+
+
+
 
     @Test
     void testSaleProcessing() {
@@ -97,7 +110,7 @@ class StoreTest {
     @Test
     void testSaleWithExpiredProduct() {
         FoodProduct expiredMilk = new FoodProduct("F002", "Expired Milk", 2.50, 
-                                                LocalDate.now().minusDays(1), 50);
+                                                  LocalDate.now().minusDays(1), 50);
         store.addProduct(expiredMilk);
 
         Map<Product, Integer> items = new HashMap<>();
@@ -121,7 +134,7 @@ class StoreTest {
     @Test
     void testExpiredProductsList() {
         FoodProduct expiredMilk = new FoodProduct("F002", "Expired Milk", 2.50, 
-                                                LocalDate.now().minusDays(1), 50);
+                                                  LocalDate.now().minusDays(1), 50);
         store.addProduct(expiredMilk);
 
         assertEquals(1, store.getExpiredProducts().size());
@@ -131,12 +144,13 @@ class StoreTest {
     @Test
     void testNearExpirationProductsList() {
         FoodProduct nearExpMilk = new FoodProduct("F003", "Near Exp Milk", 2.50, 
-                                                LocalDate.now().plusDays(5), 50);
+                                                  LocalDate.now().plusDays(5), 50);
         store.addProduct(nearExpMilk);
 
-        assertEquals(2, store.getProductsNearExpiration().size());
+        assertEquals(3, store.getProductsNearExpiration().size()); // milk, soap, nearExpMilk
         assertTrue(store.getProductsNearExpiration().contains(nearExpMilk));
         assertTrue(store.getProductsNearExpiration().contains(milk));
+        assertTrue(store.getProductsNearExpiration().contains(soap));
     }
 
     @Test
@@ -148,9 +162,9 @@ class StoreTest {
         store.processSale(register, items);
         
         double expectedProfit = store.getTotalRevenue() - 
-                              store.getTotalDeliveryCosts() - 
-                              store.getTotalSalaryCosts();
+                                store.getTotalDeliveryCosts() - 
+                                store.getTotalSalaryCosts();
         
         assertEquals(expectedProfit, store.calculateProfit(), 0.001);
     }
-} 
+}

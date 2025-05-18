@@ -1,7 +1,7 @@
 Receipt #1
-Date: 2025-05-18T14:46:12.993558
+Date: 2025-05-18T15:41:50.400435
 Cashier: John Doe
 Items:
+- Soap x1 @ 3.32 = 3.32
 - Milk x2 @ 2.55 = 5.10
-- Soap x1 @ 3.90 = 3.90
-Total: 9.00
+Total: 8.42
