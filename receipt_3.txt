@@ -1,0 +1,7 @@
+Receipt #3
+Date: 2025-05-18T14:27:47.601240
+Cashier: John Doe
+Items:
+- Milk x2 @ 44.63 = 89.25
+- Soap x1 @ 93.00 = 93.00
+Total: 182.25
