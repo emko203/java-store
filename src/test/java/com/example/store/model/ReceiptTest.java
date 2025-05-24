@@ -21,9 +21,9 @@ class ReceiptTest {
         register = new CashRegister("R001");
         cashier.assignToRegister(register);
         
-        milk = new FoodProduct("F001", "Milk", 2.50, 
+        milk = new FoodProduct("F001", "Мляко", 2.50, 
                              LocalDate.now().plusDays(5), 100);
-        soap = new NonFoodProduct("NF001", "Soap", 3.00, 
+        soap = new NonFoodProduct("NF001", "Сапун", 3.00, 
                                 LocalDate.now().plusMonths(6), 200);
     }
 
@@ -68,11 +68,11 @@ class ReceiptTest {
 
         String receiptText = receipt.generateReceiptText();
         
-        assertTrue(receiptText.contains("Receipt #1"));
-        assertTrue(receiptText.contains("Cashier: John Doe"));
-        assertTrue(receiptText.contains("Milk x2 @ 3.00"));
-        assertTrue(receiptText.contains("Soap x1 @ 4.00"));
-        assertTrue(receiptText.contains("Total: 10.00"));
+        assertTrue(receiptText.contains("Касов бон #1"));
+        assertTrue(receiptText.contains("Касиер: John Doe"));
+        assertTrue(receiptText.contains("Мляко x2 @ 3.00 лв."));
+        assertTrue(receiptText.contains("Сапун x1 @ 4.00 лв."));
+        assertTrue(receiptText.contains("Общо: 10.00 лв."));
     }
 
     @Test

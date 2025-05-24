@@ -120,4 +120,20 @@ public class Store implements Serializable {
     public double getTotalDeliveryCosts() { return totalDeliveryCosts; }
     public double getTotalSalaryCosts() { return totalSalaryCosts; }
     public int getTotalReceiptsCount() { return allReceipts.size(); }
+
+    public void displayAvailableProducts() {
+        System.out.println("\nНалични продукти:");
+        System.out.println("------------------");
+        for (Product product : products) {
+            if (!product.isExpired() && product.getQuantity() > 0) {
+                System.out.printf("ID: %s | Име: %s | Цена: %.2f лв. | Количество: %d | Дата на изтичане: %s%n",
+                    product.getId(),
+                    product.getName(),
+                    calculateProductPrice(product),
+                    product.getQuantity(),
+                    product.getExpirationDate());
+            }
+        }
+        System.out.println("------------------");
+    }
 } 

@@ -38,20 +38,20 @@ public class Receipt implements Serializable {
 
     public String generateReceiptText() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Receipt #").append(receiptNumber).append("\n");
-        sb.append("Date: ").append(timestamp).append("\n");
-        sb.append("Cashier: ").append(cashier.getName()).append("\n");
-        sb.append("Items:\n");
+        sb.append("Касов бон #").append(receiptNumber).append("\n");
+        sb.append("Дата: ").append(timestamp).append("\n");
+        sb.append("Касиер: ").append(cashier.getName()).append("\n");
+        sb.append("Продукти:\n");
         
         for (ReceiptItem item : items) {
-            sb.append(String.format("- %s x%d @ %.2f = %.2f\n",
+            sb.append(String.format("- %s x%d @ %.2f лв. = %.2f лв.\n",
                 item.getProduct().getName(),
                 item.getQuantity(),
                 item.getUnitPrice(),
                 item.getTotal()));
         }
         
-        sb.append("Total: ").append(String.format("%.2f", totalAmount));
+        sb.append("Общо: ").append(String.format("%.2f лв.", totalAmount));
         return sb.toString();
     }
 
